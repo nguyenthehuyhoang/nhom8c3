@@ -1,0 +1,59 @@
+import cv2
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
+from PIL import Image, ImageTk
+
+def on_rotate_click():
+    global original_image
+    try:
+        angle = float(rotate_entry.get())
+        rotated_image = rotate_image(original_image, angle)
+        update_images(rotated_image)
+    except ValueError:
+        pass
+
+def rotate_image(image, angle):
+    center = tuple(map(lambda x: x // 2, image.shape[1::-1]))
+    rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
+    result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
+    return result
+
+def load_image():
+    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif *.tiff")])
+    if file_path:
+        global original_image
+        original_image = cv2.imread(file_path)
+        update_images(original_image)
+
+def update_images(image):
+    cv2.imshow('img goc', original_image)
+    if hasattr(image, 'shape') and len(image.shape) == 3:
+        img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(img_rgb)
+        img_tk = ImageTk.PhotoImage(image=img_pil)
+        label.config(image=img_tk)
+        label.image = img_tk
+
+root = tk.Tk()
+root.title("Rotate Image")
+root.geometry('700x650')
+
+load_button = ttk.Button(root, text="Chọn ảnh", command=load_image)
+load_button.pack()
+
+rotate_label = ttk.Label(root, text="Góc xoay (độ):")
+rotate_label.pack()
+
+rotate_entry = ttk.Entry(root)
+rotate_entry.pack()
+rotate_entry.insert(0, "0.0")
+
+rotate_button = ttk.Button(root, text="Xoay ảnh", command=on_rotate_click)
+rotate_button.pack()
+
+label = ttk.Label(root)
+label.pack()
+
+root.mainloop()
+cv2.destroyAllWindows()
