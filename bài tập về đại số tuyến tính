@@ -1,0 +1,167 @@
+import tkinter as tk
+from sympy import Matrix, det
+
+def nhap_matran(nhap_text):
+    try:
+        # Lấy các phần tử từ chuỗi nhập vào và tạo ma trận
+        matran = Matrix(eval(nhap_text))
+        if matran.shape == (3, 3):
+            return matran
+        else:
+            return None
+    except Exception as e:
+        return None
+
+def tinh_cong():
+    try:
+        A = nhap_matran(entry_A.get())
+        B = nhap_matran(entry_B.get())
+        if A is not None and B is not None:
+            result = A + B
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, str(result))
+            result_display.config(state=tk.DISABLED)
+        else:
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, "Lỗi: Sai định dạng ma trận")
+            result_display.config(state=tk.DISABLED)
+    except Exception as e:
+        result_display.config(state=tk.NORMAL)
+        result_display.delete(0, tk.END)
+        result_display.insert(0, "Lỗi: " + str(e))
+        result_display.config(state=tk.DISABLED)
+
+def tinh_tru():
+    try:
+        A = nhap_matran(entry_A.get())
+        B = nhap_matran(entry_B.get())
+        if A is not None and B is not None:
+            result = A - B
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, str(result))
+            result_display.config(state=tk.DISABLED)
+        else:
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, "Lỗi: Sai định dạng ma trận")
+            result_display.config(state=tk.DISABLED)
+    except Exception as e:
+        result_display.config(state=tk.NORMAL)
+        result_display.delete(0, tk.END)
+        result_display.insert(0, "Lỗi: " + str(e))
+        result_display.config(state=tk.DISABLED)
+
+def tinh_nhan():
+    try:
+        A = nhap_matran(entry_A.get())
+        B = nhap_matran(entry_B.get())
+        if A is not None and B is not None:
+            result = A * B
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, str(result))
+            result_display.config(state=tk.DISABLED)
+        else:
+            result_display.config(state=tk.NORMAL)
+            result_display.delete(0, tk.END)
+            result_display.insert(0, "Lỗi: Sai định dạng ma trận")
+            result_display.config(state=tk.DISABLED)
+    except Exception as e:
+        result_display.config(state=tk.NORMAL)
+        result_display.delete(0, tk.END)
+        result_display.insert(0, "Lỗi: " + str(e))
+        result_display.config(state=tk.DISABLED)
+
+
+def tinh_nhan_so_vo_huong():
+    try:
+        A = nhap_matran(entry_A.get())
+scalar = float(entry_scalar.get())
+        if A is not None:
+            result = scalar * A
+            hien_thi_ket_qua(result)
+        else:
+            hien_thi_loi("Sai định dạng ma trận")
+    except Exception as e:
+        hien_thi_loi("Lỗi: " + str(e))
+
+def tinh_dinh_thuc():
+    try:
+        A = nhap_matran(entry_A.get())
+        if A is not None:
+            determinant = det(A)
+            hien_thi_ket_qua("Định thức: " + str(determinant))
+        else:
+            hien_thi_loi("Sai định dạng ma trận")
+    except Exception as e:
+        hien_thi_loi("Lỗi: " + str(e))
+
+def hien_thi_ket_qua(result):
+    result_display.config(state=tk.NORMAL)
+    result_display.delete(0, tk.END)
+    result_display.insert(0, str(result))
+    result_display.config(state=tk.DISABLED)
+
+def hien_thi_loi(error_message):
+    result_display.config(state=tk.NORMAL)
+    result_display.delete(0, tk.END)
+    result_display.insert(0, "Lỗi: " + error_message)
+    result_display.config(state=tk.DISABLED)
+
+
+# Tạo cửa sổ
+root = tk.Tk()
+root.title("Ứng dụng đại số tuyến tính")
+root.geometry("400x500")
+# Tạo các Label và Entry để nhập giá trị ma trận
+label_A = tk.Label(root, text="Nhập ma trận A:")
+label_A.grid(row=0, column=0, padx=(10,0), pady=(10,0))
+
+entry_A = tk.Entry(root, width=20)
+entry_A.grid(row=0, column=1, padx=(0,10), pady=(10,0))
+
+label_B = tk.Label(root, text="Nhập ma trận B:")
+label_B.grid(row=1, column=0, padx=(10,0), pady=(0,10))
+
+entry_B = tk.Entry(root, width=20)
+entry_B.grid(row=1, column=1, padx=(0,10), pady=(0,10))
+
+label_scalar = tk.Label(root, text="Nhập số vô hướng:")
+label_scalar.grid(row=4, column=0, padx=(10, 0), pady=(0, 10))
+
+entry_scalar = tk.Entry(root, width=20)
+entry_scalar.grid(row=4, column=1, padx=(0, 10), pady=(0, 10))
+
+
+
+
+# Tạo các nút tính toán
+button_cong = tk.Button(root, text="Cộng Ma trận", command=tinh_cong)
+button_cong.grid(row=2, column=0, padx=(10,0), pady=(0,10))
+
+button_tru = tk.Button(root, text="Trừ Ma trận", command=tinh_tru)
+button_tru.grid(row=2, column=1, pady=(0,10))
+
+button_nhan = tk.Button(root, text="Nhân Ma trận", command=tinh_nhan)
+button_nhan.grid(row=3, column=0, padx=(10,0), pady=(0,10))
+
+button_nhan_scalar = tk.Button(root, text="Nhân Ma trận với số vô hướng", command=tinh_nhan_so_vo_huong)
+button_nhan_scalar.grid(row=5, column=0, padx=(10,0), pady=(0,10))
+
+button_dinh_thuc = tk.Button(root, text="Tính Định thức", command=tinh_dinh_thuc)
+button_dinh_thuc.grid(row=8, column=0, padx=(10, 0), pady=(0, 10))
+
+
+
+# Thêm vùng hiển thị kết quả
+result_label = tk.Label(root, text="Kết quả:")
+result_label.grid(row=6, column=0, columnspan=2, pady=(0,10))
+
+result_display = tk.Entry(root, width=40, state='readonly')
+result_display.grid(row=7, column=0, columnspan=2, pady=(0,10))
+
+# Chạy ứng dụng
+root.mainloop()
