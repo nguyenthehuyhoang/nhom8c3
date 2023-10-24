@@ -1,0 +1,146 @@
+import cv2
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
+from PIL import Image, ImageTk
+import numpy as np
+
+def open_image(): #them anh
+    global original_image
+    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif *.tiff")])
+    if file_path:
+        original_image = cv2.imread(file_path)
+        update_images()
+
+def zoom_image(): 
+    global zoomed_image
+    try:
+        x_scale = float(x_entry.get())
+        y_scale = float(y_entry.get())
+        zoomed_image = cv2.resize(original_image, None, fx=x_scale, fy=y_scale, interpolation=cv2.INTER_LINEAR)
+        update_images()
+    except ValueError:
+        pass
+
+def rotate_image():
+    global rotated_image
+    try:
+        angle = float(angle_entry.get())
+        rows, cols, _ = original_image.shape
+        rotation_matrix = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
+        rotated_image = cv2.warpAffine(original_image, rotation_matrix, (cols, rows))
+        update_images()
+    except ValueError:
+        pass
+
+def normalize_image():
+    global normalized_image
+    if original_image is not None:
+        normalized_image = cv2.normalize(original_image, None, 0, 255, cv2.NORM_MINMAX)
+        update_images()
+def edge_detection1():
+    global edge_image1
+    if normalized_image is not None:
+        low_threshold = int(low_threshold_entry.get())
+        high_threshold = int(high_threshold_entry.get())
+        gray_image1 = cv2.cvtColor(normalized_image, cv2.COLOR_BGR2GRAY)
+        edge_image1 = cv2.Canny(gray_image1, low_threshold, high_threshold)
+        update_images()
+
+def edge_detection():
+    global edge_image
+    if original_image is not None:
+        low_threshold = int(low_threshold_entry.get())
+        high_threshold = int(high_threshold_entry.get())
+        gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
+        edge_image = cv2.Canny(gray_image, low_threshold, high_threshold)
+        update_images()
+
+def update_images():
+    cv2.imshow('Original Image', original_image)
+    if zoomed_image is not None:
+        cv2.imshow('Zoomed Image', zoomed_image)
+    if rotated_image is not None:
+        cv2.imshow('Rotated Image', rotated_image)
+    if normalized_image is not None:
+        cv2.imshow('Normalized Image', normalized_image)
+    if edge_image is not None:
+        cv2.imshow('Edge Image', edge_image)
+    if edge_image1 is not None:
+        cv2.imshow('Edge Image1', edge_image1)
+
+root = tk.Tk()
+root.title("Image Processing App")
+root.geometry('700x700')
+
+original_image = None
+zoomed_image = None
+rotated_image = None
+normalized_image = None
+edge_image = None
+edge_image1 = None
+
+load_button = ttk.Button(root, text="Open Image", command=open_image)
+load_button.pack()
+
+zoom_label = ttk.Label(root, text="Zoom Image:")
+zoom_label.pack()
+
+x_label = ttk.Label(root, text="X Scale:")
+x_label.pack()
+
+x_entry = ttk.Entry(root)
+x_entry.pack()
+x_entry.insert(0, "1.0")
+y_label = ttk.Label(root, text="Y Scale:")
+y_label.pack()
+
+y_entry = ttk.Entry(root)
+y_entry.pack()
+y_entry.insert(0, "1.0")
+
+zoom_button = ttk.Button(root, text="Zoom", command=zoom_image)
+zoom_button.pack()
+
+rotate_label = ttk.Label(root, text="Rotate Image:")
+rotate_label.pack()
+
+angle_label = ttk.Label(root, text="Angle:")
+angle_label.pack()
+
+angle_entry = ttk.Entry(root)
+angle_entry.pack()
+angle_entry.insert(0, "0.0")
+
+rotate_button = ttk.Button(root, text="Rotate", command=rotate_image)
+rotate_button.pack()
+
+normalize_button = ttk.Button(root, text="Normalize Image", command=normalize_image)
+normalize_button.pack()
+
+edge_label = ttk.Label(root, text="Edge Detection:")
+edge_label.pack()
+
+low_threshold_label = ttk.Label(root, text="Low Threshold:")
+low_threshold_label.pack()
+
+low_threshold_entry = ttk.Entry(root)
+low_threshold_entry.pack()
+low_threshold_entry.insert(0, "50")
+
+high_threshold_label = ttk.Label(root, text="High Threshold:")
+high_threshold_label.pack()
+
+high_threshold_entry = ttk.Entry(root)
+high_threshold_entry.pack()
+high_threshold_entry.insert(0, "150")
+
+edge_button = ttk.Button(root, text="Detect Edges", command=edge_detection)
+edge_button.pack()
+
+edge_button = ttk.Button(root, text="Detect Edges (Normalized)", command=edge_detection1)
+edge_button.pack()
+
+
+root.mainloop()
+cv2.destroyAllWindows()
