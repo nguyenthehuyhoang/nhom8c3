@@ -1,4 +1,4 @@
-import cv2
+import cv
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
