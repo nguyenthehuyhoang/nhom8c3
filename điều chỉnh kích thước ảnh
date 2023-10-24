@@ -1,0 +1,84 @@
+import cv2
+import tkinter as tk
+from tkinter import ttk
+from PIL import Image, ImageTk
+
+def open_image():
+    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.png *.bmp")])
+    if file_path:
+        global original_image, img_tk
+        original_image = cv2.imread(file_path)
+        original_image_rgb = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+        img_tk = ImageTk.PhotoImage(Image.fromarray(original_image_rgb))
+        update_images()
+
+def save_zoomed_image():
+    file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+    if file_path:
+        cv2.imwrite(file_path, cv2.cvtColor(zoomed_image, cv2.COLOR_RGB2BGR))
+
+def on_scale_change(value):
+    global scale_factor
+    scale_factor = float(value)
+    update_images()
+
+def update_images():
+    # Tạo ảnh co dãn
+    zoomed_img = cv2.resize(original_image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
+    # Chuyển đổi mảng NumPy thành hình ảnh RGB
+    zoomed_img_rgb = cv2.cvtColor(zoomed_img, cv2.COLOR_BGR2RGB)
+    # Tạo ảnh từ mảng NumPy để hiển thị trên giao diện
+    zoomed_img_tk = ImageTk.PhotoImage(Image.fromarray(zoomed_img_rgb))
+    
+    # Hiển thị ảnh gốc và ảnh co dãn trên giao diện
+    img_label_original.config(image=img_tk)
+    img_label_zoomed.config(image=zoomed_img_tk)
+    img_label_zoomed.image = zoomed_img_tk  # Giữ tham chiếu để tránh việc bị thu hồi
+
+    # Cập nhật thông tin về tỷ lệ zoom
+    scale_info_label.config(text=f"Tỷ lệ zoom: {scale_factor:.2f}")
+
+root = tk.Tk()
+root.title("Zoom Image")
+root.geometry('800x400')
+
+# Đọc ảnh gốc
+original_image = cv2.imread('path/to/your/image.jpg') #đọc đường dẫn trên máy
+original_image_rgb = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+img_tk = ImageTk.PhotoImage(Image.fromarray(original_image_rgb))
+
+# Label để hiển thị ảnh gốc
+img_label_original = ttk.Label(root, image=img_tk)
+img_label_original.pack()
+
+scale_label = ttk.Label(root, text="Tỉ lệ zoom:")
+scale_label.pack()
+
+# Button mở tệp hình ảnh
+open_button = ttk.Button(root, text="Mở ảnh", command=open_image)
+open_button.pack()
+
+# Slider để điều chỉnh tỉ lệ zoom
+scale_label = ttk.Label(root, text="Tỷ lệ zoom:")
+scale_label.pack()
+
+scale_slider = ttk.Scale(root, from_=0.1, to=2, orient="horizontal", command=on_scale_change)
+scale_slider.set(1.0)
+scale_slider.pack()
+
+# Label để hiển thị ảnh co dãn
+img_label_zoomed = ttk.Label(root)
+img_label_zoomed.pack()
+
+# Button lưu hình ảnh phóng to
+save_button = ttk.Button(root, text="Lưu ảnh phóng to", command=save_zoomed_image)
+save_button.pack()
+
+# Label để hiển thị thông tin về tỷ lệ zoom
+scale_info_label = ttk.Label(root, text="Tỷ lệ zoom: 1.00")
+scale_info_label.pack()
+
+scale_factor = 1.0
+update_images()
+root.mainloop()
+cv2.destroyAllWindows()
