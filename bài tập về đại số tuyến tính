@@ -1,5 +1,6 @@
 import tkinter as tk
 from sympy import Matrix, det
+import numpy as np
 
 def nhap_matran(nhap_text):
     try:
