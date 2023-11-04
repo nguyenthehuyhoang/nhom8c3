@@ -3,16 +3,17 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-import numpy as np
 
-def open_image(): #them anh
+# Hàm mở tệp ảnh
+def open_image():
     global original_image
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif *.tiff")])
     if file_path:
         original_image = cv2.imread(file_path)
         update_images()
 
-def zoom_image(): 
+# Hàm thu phóng ảnh
+def zoom_image():
     global zoomed_image
     try:
         x_scale = float(x_entry.get())
@@ -22,6 +23,7 @@ def zoom_image():
     except ValueError:
         pass
 
+# Hàm xoay ảnh
 def rotate_image():
     global rotated_image
     try:
@@ -33,20 +35,14 @@ def rotate_image():
     except ValueError:
         pass
 
+# Hàm chuẩn hóa ảnh
 def normalize_image():
     global normalized_image
     if original_image is not None:
         normalized_image = cv2.normalize(original_image, None, 0, 255, cv2.NORM_MINMAX)
         update_images()
-def edge_detection1():
-    global edge_image1
-    if normalized_image is not None:
-        low_threshold = int(low_threshold_entry.get())
-        high_threshold = int(high_threshold_entry.get())
-        gray_image1 = cv2.cvtColor(normalized_image, cv2.COLOR_BGR2GRAY)
-        edge_image1 = cv2.Canny(gray_image1, low_threshold, high_threshold)
-        update_images()
 
+# Hàm phát hiện biên (Edge Detection) trên ảnh gốc
 def edge_detection():
     global edge_image
     if original_image is not None:
@@ -56,21 +52,33 @@ def edge_detection():
         edge_image = cv2.Canny(gray_image, low_threshold, high_threshold)
         update_images()
 
-def update_images():
-    cv2.imshow('Original Image', original_image)
-    if zoomed_image is not None:
-        cv2.imshow('Zoomed Image', zoomed_image)
-    if rotated_image is not None:
-        cv2.imshow('Rotated Image', rotated_image)
+# Hàm phát hiện biên (Edge Detection) trên ảnh đã chuẩn hóa
+def edge_detection1():
+    global edge_image1
     if normalized_image is not None:
-        cv2.imshow('Normalized Image', normalized_image)
-    if edge_image is not None:
-        cv2.imshow('Edge Image', edge_image)
-    if edge_image1 is not None:
-        cv2.imshow('Edge Image1', edge_image1)
+        low_threshold = int(low_threshold_entry.get())
+        high_threshold = int(high_threshold_entry.get())
+        gray_image1 = cv2.cvtColor(normalized_image, cv2.COLOR_BGR2GRAY)
+        edge_image1 = cv2.Canny(gray_image1, low_threshold, high_threshold)
+        update_images()
 
+# Hàm cập nhật hiển thị ảnh
+def update_images():
+    cv2.imshow('Ảnh Gốc', original_image)
+    if zoomed_image is not None:
+        cv2.imshow('Ảnh Thu Phóng', zoomed_image)
+    if rotated_image is not None:
+        cv2.imshow('Ảnh Đã Xoay', rotated_image)
+    if normalized_image is not None:
+        cv2.imshow('Ảnh Đã Chuẩn Hóa', normalized_image)
+    if edge_image is not None:
+        cv2.imshow('Ảnh Biên (Gốc)', edge_image)
+    if edge_image1 is not None:
+        cv2.imshow('Ảnh Biên (Chuẩn Hóa)', edge_image1)
+
+# Tạo cửa sổ giao diện
 root = tk.Tk()
-root.title("Image Processing App")
+root.title("Ứng dụng Xử lý Ảnh")
 root.geometry('700x700')
 
 original_image = None
@@ -80,67 +88,51 @@ normalized_image = None
 edge_image = None
 edge_image1 = None
 
-load_button = ttk.Button(root, text="Open Image", command=open_image)
+# Tạo nút "Mở Ảnh" và gắn sự kiện khi nhấn nút
+load_button = ttk.Button(root, text="Mở Ảnh", command=open_image)
 load_button.pack()
 
-zoom_label = ttk.Label(root, text="Zoom Image:")
+# Thực hiện thu phóng ảnh
+zoom_label = ttk.Label(root, text="Thu Phóng Ảnh:")
 zoom_label.pack()
 
-x_label = ttk.Label(root, text="X Scale:")
+x_label = ttk.Label(root, text="Tỉ lệ X:")
 x_label.pack()
 
 x_entry = ttk.Entry(root)
 x_entry.pack()
 x_entry.insert(0, "1.0")
-y_label = ttk.Label(root, text="Y Scale:")
+
+y_label = ttk.Label(root, text="Tỉ lệ Y:")
 y_label.pack()
 
 y_entry = ttk.Entry(root)
 y_entry.pack()
 y_entry.insert(0, "1.0")
 
-zoom_button = ttk.Button(root, text="Zoom", command=zoom_image)
+zoom_button = ttk.Button(root, text="Thu Phóng", command=zoom_image)
 zoom_button.pack()
 
-rotate_label = ttk.Label(root, text="Rotate Image:")
+# Thực hiện xoay ảnh
+rotate_label = ttk.Label(root, text="Xoay Ảnh:")
 rotate_label.pack()
 
-angle_label = ttk.Label(root, text="Angle:")
+angle_label = ttk.Label(root, text="Góc:")
 angle_label.pack()
 
 angle_entry = ttk.Entry(root)
 angle_entry.pack()
 angle_entry.insert(0, "0.0")
 
-rotate_button = ttk.Button(root, text="Rotate", command=rotate_image)
+rotate_button = ttk.Button(root, text="Xoay", command=rotate_image)
 rotate_button.pack()
 
-normalize_button = ttk.Button(root, text="Normalize Image", command=normalize_image)
+# Chuẩn hóa ảnh
+normalize_button = ttk.Button(root, text="Chuẩn Hóa Ảnh", command=normalize_image)
 normalize_button.pack()
 
-edge_label = ttk.Label(root, text="Edge Detection:")
+# Phát hiện biên
+edge_label = ttk.Label(root, text="Phát Hiện Biên:")
 edge_label.pack()
 
-low_threshold_label = ttk.Label(root, text="Low Threshold:")
-low_threshold_label.pack()
-
-low_threshold_entry = ttk.Entry(root)
-low_threshold_entry.pack()
-low_threshold_entry.insert(0, "50")
-
-high_threshold_label = ttk.Label(root, text="High Threshold:")
-high_threshold_label.pack()
-
-high_threshold_entry = ttk.Entry(root)
-high_threshold_entry.pack()
-high_threshold_entry.insert(0, "150")
-
-edge_button = ttk.Button(root, text="Detect Edges", command=edge_detection)
-edge_button.pack()
-
-edge_button = ttk.Button(root, text="Detect Edges (Normalized)", command=edge_detection1)
-edge_button.pack()
-
-
-root.mainloop()
-cv2.destroyAllWindows()
+low_threshold_label = ttk.Label(root, text="Ng
