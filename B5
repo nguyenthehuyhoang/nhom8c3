@@ -1,14 +1,13 @@
 import cv2
-import pandas as ps
-import numpy as np
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+from tkinter import ttk, filedialog
 from PIL import Image, ImageTk
 
+# Hàm xử lý sự kiện khi nút "Chuẩn hóa ảnh" được nhấn
 def on_normalize_click():
     global original_image
     try:
+        # Hiển thị hộp thoại chọn tệp ảnh
         image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif *.tiff")])
         if image_path:
             original_image = cv2.imread(image_path)
@@ -17,6 +16,7 @@ def on_normalize_click():
     except Exception as e:
         print(e)
 
+# Hàm chuẩn hóa ảnh
 def normalize_image(image):
     # Chuẩn hoá ảnh màu
     normalized_color_image = cv2.normalize(image, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
@@ -26,10 +26,11 @@ def normalize_image(image):
     
     return normalized_color_image, gray_image
 
+# Hàm cập nhật hiển thị ảnh trên giao diện
 def update_images(original, normalized_color, normalized_gray):
-    cv2.imshow('img goc', original)
-    cv2.imshow('img da chuan hoa RGB', normalized_color)
-    cv2.imshow('img da chuan hoa Xam', normalized_gray)
+    cv2.imshow('Ảnh gốc', original)
+    cv2.imshow('Ảnh đã chuẩn hóa RGB', normalized_color)
+    cv2.imshow('Ảnh đã chuẩn hóa Xám', normalized_gray)
     
     if hasattr(original, 'shape') and len(original.shape) == 3:
         img_rgb = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
@@ -38,15 +39,21 @@ def update_images(original, normalized_color, normalized_gray):
         label.config(image=img_tk)
         label.image = img_tk
 
+# Tạo cửa sổ giao diện
 root = tk.Tk()
 root.title("Normalize Image")
 root.geometry('900x650')
 
-normalize_button = ttk.Button(root, text="Chuẩn hoá ảnh", command=on_normalize_click)
+# Tạo nút "Chuẩn hóa ảnh" và gắn sự kiện khi nhấn nút
+normalize_button = ttk.Button(root, text="Chuẩn hóa ảnh", command=on_normalize_click)
 normalize_button.pack()
 
+# Tạo một nhãn để hiển thị ảnh
 label = ttk.Label(root)
 label.pack()
 
+# Bắt đầu vòng lặp giao diện chính
 root.mainloop()
+
+# Đóng cửa sổ OpenCV khi kết thúc
 cv2.destroyAllWindows()
