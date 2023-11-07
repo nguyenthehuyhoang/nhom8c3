@@ -4,7 +4,6 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 
-# Define kernels
 kernel_sharpen_1 = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
 kernel_sharpen_2 = np.array([[1,1,1], [1,-7,1], [1,1,1]])
 kernel_sharpen_3 = np.array([[-1,-1,-1,-1,-1],
@@ -13,6 +12,8 @@ kernel_sharpen_3 = np.array([[-1,-1,-1,-1,-1],
                              [-1,2,2,2,-1],
                              [-1,-1,-1,-1,-1]]) / 8.0
 
+
+#open image
 def open_image():
     global img
     global original_img
@@ -22,6 +23,7 @@ def open_image():
     original_img = img.copy()  # Lưu ảnh gốc
     cv2.imshow('Original Image', original_img)  # Hiển thị ảnh gốc
 
+#udate
 def update_sharpness_and_brightness(kernel):
     global img
     sharpness = float(sharpness_entry.get())
