@@ -4,8 +4,11 @@ from tkinter import Tk, Label, Entry, Button
 
 # Bước 1: Đọc dữ liệu từ file diemPython.csv
 def doc_du_lieu(file_path):
-    df = pd.read_csv(file_path)
-    return df
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except Exception as e:
+        raise e
 
 # Bước 2: Thực hiện các yêu cầu
 def thuc_hien_yeu_cau(df):
@@ -30,9 +33,7 @@ def thuc_hien_yeu_cau(df):
     # Tính trung bình số sinh viên đạt điểm A của tất cả các lớp
     trung_binh_sv_dat_A_cua_tat_ca_lop = trung_binh_sv_dat['Loại A'].mean()
 
-    return tong_sv, tong_sv_dat_A, ti_le_dat_A, lop_max_A, trung_binh_sv_dat, tong_sv_dat_cua_tat_ca_lop, 
-           trung_binh_sv_dat_A_cua_tat_ca_lop
-           
+    return tong_sv, tong_sv_dat_A, ti_le_dat_A, lop_max_A, trung_binh_sv_dat, tong_sv_dat_cua_tat_ca_lop, trung_binh_sv_dat_A_cua_tat_ca_lop
 
 # Bước 3: Vẽ biểu đồ phân bố điểm
 def ve_bieu_do(diem_counts):
@@ -67,13 +68,12 @@ def thuc_hien():
                                       f"Trung bình số sinh viên đạt điểm A của tất cả các lớp: {trung_binh_sv_dat_A_cua_tat_ca_lop:.2f}\n")
 
             # Vẽ biểu đồ phân bố điểm
-ve_bieu_do(df[['Loại A', 'Loại B+', 'Loại B', 'Loại C+', 'Loại C', 'Loại D+', 'Loại D', 'Loại F']].sum())
+            ve_bieu_do(df[['Loại A', 'Loại B+', 'Loại B', 'Loại C+', 'Loại C', 'Loại D+', 'Loại D', 'Loại F']].sum())
 
         except Exception as e:
             ket_qua_label.config(text=f"Đã xảy ra lỗi: {e}")
     else:
         ket_qua_label.config(text="Vui lòng nhập đường dẫn.")
-
 
 # Tạo giao diện Tkinter
 root = Tk()
