@@ -92,3 +92,56 @@ x_label.pack()
 x_entry = ttk.Entry(root)
 x_entry.pack()
 x_entry.insert(0, "1.0")
+
+y_label = ttk.Label(root, text="Y Scale:")
+y_label.pack()
+
+y_entry = ttk.Entry(root)
+y_entry.pack()
+y_entry.insert(0, "1.0")
+
+zoom_button = ttk.Button(root, text="Zoom", command=zoom_image)
+zoom_button.pack()
+
+rotate_label = ttk.Label(root, text="Rotate Image:")
+rotate_label.pack()
+
+angle_label = ttk.Label(root, text="Angle:")
+angle_label.pack()
+
+angle_entry = ttk.Entry(root)
+angle_entry.pack()
+angle_entry.insert(0, "0.0")
+
+rotate_button = ttk.Button(root, text="Rotate", command=rotate_image)
+rotate_button.pack()
+
+normalize_button = ttk.Button(root, text="Normalize Image", command=normalize_image)
+normalize_button.pack()
+
+edge_label = ttk.Label(root, text="Edge Detection:")
+edge_label.pack()
+
+low_threshold_label = ttk.Label(root, text="Low Threshold:")
+low_threshold_label.pack()
+
+low_threshold_entry = ttk.Entry(root)
+low_threshold_entry.pack()
+low_threshold_entry.insert(0, "50")
+
+high_threshold_label = ttk.Label(root, text="High Threshold:")
+high_threshold_label.pack()
+
+high_threshold_entry = ttk.Entry(root)
+high_threshold_entry.pack()
+high_threshold_entry.insert(0, "150")
+
+edge_button = ttk.Button(root, text="Detect Edges", command=edge_detection)
+edge_button.pack()
+
+edge_button = ttk.Button(root, text="Detect Edges (Normalized)", command=edge_detection1)
+edge_button.pack()
+
+
+root.mainloop()
+cv2.destroyAllWindows()
