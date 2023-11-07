@@ -80,7 +80,7 @@ root = Tk()
 root.geometry("800x600")
 root.title("Thống kê điểm")
 
-# Nhãn và ô nhập đường dẫn
+# Nhãn và ô nhập đường dẫn 
 duong_dan_label = Label(root, text="Nhập đường dẫn của file 'diemPython.csv':")
 duong_dan_label.pack(pady=(10,0))
 
